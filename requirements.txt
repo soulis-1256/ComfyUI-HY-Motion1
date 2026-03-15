@@ -1,5 +1,7 @@
---extra-index-url https://gitlab.inria.fr/api/v4/projects/18692/packages/pypi/simple
-fbxsdkpy==2020.1.post2
+# fbxsdkpy==2020.1.post2 — OPTIONAL, FBX export only.
+# Autodesk download URLs are broken; install manually if needed:
+#   pip install fbxsdkpy --extra-index-url https://gitlab.inria.fr/api/v4/projects/18692/packages/pypi/simple
+# The code gracefully falls back to GLB export when fbx is unavailable.
 
 torchdiffeq>=0.2.5
 transforms3d>=0.4.2
