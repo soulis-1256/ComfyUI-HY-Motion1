@@ -10,7 +10,7 @@ import yaml
 
 from ..prompt_engineering.prompt_rewrite import PromptRewriter
 from .loaders import load_object
-from .visualize_mesh_web import save_visualization_data, generate_static_html_content
+from .visualize_mesh_web import save_visualization_data
 
 try:
     import fbx
@@ -323,11 +323,7 @@ class T2MRuntime:
             output_filename=output_filename,
         )
 
-        html_content = self._generate_html_content(
-            timestamp=ts,
-            file_path=base_filename,
-            output_dir=output_dir,
-        )
+        html_content = ""
 
         if output_format == "fbx" and not self.fbx_available:
             print(">>> Warning: FBX export requested but FBX SDK is not available. Falling back to dict format.")
@@ -345,46 +341,6 @@ class T2MRuntime:
             return html_content, [], model_output
         else:
             raise ValueError(f">>> Invalid output format: {output_format}")
-
-    def _generate_html_content(
-        self,
-        timestamp: str,
-        file_path: str,
-        output_dir: Optional[str] = None,
-    ) -> str:
-        """
-        Generate static HTML content with embedded data for iframe srcdoc.
-        All JavaScript code is embedded directly in the HTML, no external static resources needed.
-
-        Args:
-            timestamp: Timestamp string for logging
-            file_path: Base filename (without extension)
-            output_dir: Directory where NPZ/meta files are stored
-
-        Returns:
-            HTML content string (to be used in iframe srcdoc)
-        """
-        print(f">>> Generating static HTML content, timestamp: {timestamp}")
-        gradio_dir = output_dir if output_dir is not None else "output/gradio"
-
-        try:
-            # Generate static HTML content with embedded data (all JS is embedded in template)
-            html_content = generate_static_html_content(
-                folder_name=gradio_dir,
-                file_name=file_path,
-                hide_captions=False,
-            )
-
-            print(f">>> Static HTML content generated for: {file_path}")
-            return html_content
-
-        except Exception as e:
-            print(f">>> Failed to generate static HTML content: {e}")
-            import traceback
-
-            traceback.print_exc()
-            # Return error HTML
-            return f"<html><body><h1>Error generating visualization</h1><p>{str(e)}</p></body></html>"
 
     def _generate_fbx_files(
         self,
